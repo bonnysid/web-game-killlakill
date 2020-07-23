@@ -1,0 +1,16 @@
+@import "nullstyle.scss";
+@import "load.scss";
+@import "header.scss";
+@import "content.scss";
+@import "controls.scss";
+@import "raiting.scss";
+@import "footer.scss";
+
+// $fz:100px; // переменная
+
+// @mixin fontz($f) { //функция
+//     font-size: $f;
+// }
+
+// @include fontz(10px); //подключение функции
+// @extend .tplborder;

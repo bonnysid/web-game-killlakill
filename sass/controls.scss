@@ -1,0 +1,58 @@
+.controls {
+    display: flex;
+    flex-direction: column;
+    background-color: $dark;
+    border: 4px solid $blood;
+    font-family: Pixel;
+    letter-spacing: 1px;
+    max-width: 906px;
+    margin: 100px auto;
+
+    &__title {
+        color: $white;
+        font-size: 32px;
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+        border-bottom: 4px solid $blood;
+    }
+}
+
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+
+    &__title {
+        font-size: 24px;
+        color: $white;
+        width: 100%;
+    }
+
+    &__description {
+        font-size: 24px;
+        color: $white;
+        padding: 5px 26px;
+        max-width: 300px;
+
+        span {
+            color: $blood;
+        }
+    }
+
+    &__img {
+        width: 120px;
+        margin: 0 20px;
+
+        img {
+            width: 100%;
+            position: relative;
+            bottom: 15px;
+        }
+
+        &.space {
+            width: 198px;
+            align-self: flex-end;
+        }
+    }
+}

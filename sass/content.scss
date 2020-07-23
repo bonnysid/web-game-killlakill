@@ -1,0 +1,48 @@
+.content {
+    flex: 1 0 auto;
+    position: relative;
+
+    &.game {
+        display: flex;
+        align-items: center;
+    }
+
+    canvas {
+        image-rendering: optimizeSpeed;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: optimize-contrast;
+        image-rendering: pixelated;
+        -ms-interpolation-mode: nearest-neighbor;
+        min-height: 672px;
+    }
+
+    #gameAnim {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .game__play {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        background: #4b4c4e;
+        // background: #313131;
+        color: $white;
+        font-size: 36px;
+        font-family: Pixel;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+            color: $blood;
+            margin: 0 17px;
+        }
+    }
+}
