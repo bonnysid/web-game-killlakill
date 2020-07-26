@@ -619,4 +619,25 @@ const arenaMatrix = [{
     },
 ];
 
-export default arenaMatrix;
+const sprites = new Image();
+sprites.src = 'img/people/SpritesPeople2.png';
+
+const background = new Image();
+background.src = 'img/bg/bg2.png';
+
+const backgroundClose = new Image();
+backgroundClose.src = 'img/bg/bgClose.png';
+
+const blocks = new Image();
+blocks.src = 'img/blocks/AllBlocks.png';
+
+const objects = [];
+
+export {
+    arenaMatrix,
+    sprites,
+    background,
+    backgroundClose,
+    blocks,
+    objects
+};

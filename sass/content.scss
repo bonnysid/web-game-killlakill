@@ -18,9 +18,17 @@
     }
 
     #gameAnim {
+        image-rendering: optimizeSpeed;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: optimize-contrast;
+        image-rendering: pixelated;
+        -ms-interpolation-mode: nearest-neighbor;
         position: absolute;
-        top: 0;
+        top: 50%;
         left: 0;
+        transform: translate(0, -50%);
+        min-height: 672px;
     }
 
     .game__play {

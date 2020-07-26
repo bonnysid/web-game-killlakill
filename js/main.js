@@ -1,17 +1,33 @@
-import Hero from './mobs.js';
 import headerShow from './header.js';
-
+import {
+    Hero,
+    Enemy,
+    AnimationGame,
+    bullets
+} from './classes.js';
 import {
     massiveOfBlocks,
     Map
 } from './maps.js';
-
-import arenaMatrix from './resources.js';
-
+import {
+    arenaMatrix,
+    sprites,
+    background,
+    backgroundClose,
+    blocks,
+    objects
+} from './resources.js';
+import {
+    pressedKeys,
+    activateControls
+} from './controls.js';
 
 window.addEventListener('DOMContentLoaded', () => {
+    let loading = 0;
+    //Header render
     headerShow();
 
+    //Get all need objects
     const canvasBody = document.querySelector('.content');
     const canvas = canvasBody.querySelector('#gameBG');
     const canvasAnim = canvasBody.querySelector('#gameAnim');
@@ -23,68 +39,60 @@ window.addEventListener('DOMContentLoaded', () => {
     const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
     const cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
-    let setting = 'go';
 
-    canvas.width = canvasBody.clientWidth - (canvasBody.clientWidth % 32);
+    //Setting canvas
+    canvas.width = canvasBody.clientWidth;
     canvas.height = canvasBody.clientHeight - (canvasBody.clientHeight % 32);
-    canvasAnim.width = canvasBody.clientWidth - (canvasBody.clientWidth % 32);
+    canvasAnim.width = canvasBody.clientWidth;
     canvasAnim.height = canvasBody.clientHeight - (canvasBody.clientHeight % 32);
 
+    //Creates new Map
     const arena = new Map(
         arenaMatrix,
-        'img/blocks/AllBlocks.png',
-        'img/bg/bg2.png',
-        'img/bg/bgClose.png',
+        blocks,
+        background,
+        backgroundClose,
         canvas,
         ctx
     );
 
-    const mainHero = new Hero(
-        4,
-        5,
-        'img/people/SpritesPeople2.png',
-        ctxAnim
-    );
+    //Creates player
+    let mainHero;
+    sprites.onload = () => {
+        mainHero = new Hero(
+            4,
+            5,
+            sprites,
+            canvasAnim,
+            ctxAnim
+        );
+        loading++;
+        objects.push(mainHero);
+        // objects.push(bullets);
+    };
+    const animation = new AnimationGame(objects, canvasAnim, ctxAnim);
+
+    function anim() {
+        animation.draw();
+        animation.update();
+        bullets.forEach((bullet, i) => {
+            bullet.draw();
+            bullet.update();
+            if (bullet.isOut) {
+                bullets.splice(i, 1);
+            }
+        });
+        requestAnimationFrame(anim);
+    }
 
     btnPlay.addEventListener('click', (e) => {
         e.preventDefault();
-        if (nickname.value) {
+        if (nickname.value && loading === 1) {
             blockStart.style.display = 'none';
+            activateControls(mainHero);
             anim();
-            window.addEventListener('keydown', (e) => {
-                e.preventDefault();
-                if (e.keyCode === 68) {
-                    mainHero.move('right');
-                    setting = 'stop';
-                } else if (e.keyCode === 65) {
-                    mainHero.move('left');
-                    setting = 'stop';
-                } else {
-                    setting = 'go';
-                    anim();
-                }
-            });
-            window.addEventListener('keyup', (e) => {
-                e.preventDefault();
-                setting = 'go';
-                anim();
-            });
         }
     });
-
+    //Render New Map
     arena.render();
-    mainHero.stay();
-
-    function anim() {
-        if (setting != 'stop') {
-            setTimeout(() => {
-                mainHero.stay();
-                requestAnimationFrame(anim);
-            }, 150);
-        }
-    }
-
-    //stay 150 ms
-    //move 200 ms
-
 });

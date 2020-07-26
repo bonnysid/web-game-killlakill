@@ -1,7 +1,7 @@
 export let massiveOfBlocks = [];
 
 export class Map {
-    constructor(mapMatrix, srcBlocks, srcBG, srcBGClose, canvas, ctx, widthBlock = 96, heightBlock = 96) {
+    constructor(mapMatrix, blocks, bg, bgClose, canvas, ctx, widthBlock = 96, heightBlock = 96) {
         this.mapMatrix = mapMatrix;
         this.canvas = canvas;
         this.ctx = ctx;
@@ -10,26 +10,14 @@ export class Map {
 
 
         //get a background
-        this.bg = new Image();
-        this.bg.src = srcBG;
-
-        this.bgClose = new Image();
-        this.bgClose.src = srcBGClose;
+        this.bg = bg;
+        this.bgClose = bgClose;
 
         //get a tails
-        this.blocks = new Image();
-        this.blocks.src = srcBlocks;
+        this.blocks = blocks;
     }
 
     render() {
-        function check(target) {
-            if (target.complete) {
-                return true;
-            } else {
-                check(target);
-            }
-        }
-
         this.bg.onload = () => {
             this.ctx.drawImage(this.bg, 0, 0, 1400, 788, 0, 0, this.canvas.width, this.canvas.height);
         };
