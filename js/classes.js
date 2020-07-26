@@ -36,10 +36,11 @@ class Hero {
         this.mp = mana;
         this.speed = speed;
         this.sizeBlock = 96;
-        this.gravitationPower = 2;
+        this.gravitationPower = 0;
         this.jumpPower = -10;
         this.hitBoxHeight = heightSprite - 21;
         this.hitBoxWidth = widthSprite - 72;
+        this.dump = 0;
 
         //Positions
         this.widthSprite = widthSprite;
@@ -82,8 +83,7 @@ class Hero {
     }
 
     update() {
-        // this.gravity();
-
+        this.drawHitBoxes();
         this.frame = this.frame >= 1000 ? 0 : this.frame += 1;
         if (this.isMoving) {
             this.posX += this.speed * this.direction;
@@ -108,11 +108,9 @@ class Hero {
             }
         }
         if (this.isJumping) {
-            // this.posY += this.jumpPower === 0 ? 0 : this.jumpPower += this.gravitationPower;
-            this.gravitationPower = -20;
+            this.gravitationPower = -28;
+            this.dump = Math.abs(this.gravitationPower);
             this.posY += this.gravitationPower;
-        } else {
-            // this.jumpPower = -100;
         }
         this.hitBoxPosX = this.posX + (this.direction === 1 ? 20 : 48);
         this.hitBoxPosY = this.posY + 21;
@@ -130,19 +128,42 @@ class Hero {
     }
 
     onBlock(block) {
+        // return massiveOfBlocks.some(block => ((this.hitBoxPosY + this.hitBoxHeight === block.coordY) && ((this.hitBoxPosX >= block.coordX && this.hitBoxPosX <= block.coordX + this.sizeBlock) || (this.hitBoxPosX + this.hitBoxWidth >= block.coordX && this.hitBoxPosX + this.hitBoxWidth <= block.coordX + this.sizeBlock))));
         return ((this.hitBoxPosY + this.hitBoxHeight === block.coordY) && ((this.hitBoxPosX >= block.coordX && this.hitBoxPosX <= block.coordX + this.sizeBlock) || (this.hitBoxPosX + this.hitBoxWidth >= block.coordX && this.hitBoxPosX + this.hitBoxWidth <= block.coordX + this.sizeBlock)));
     }
 
     gravity() {
-        if (!massiveOfBlocks.some(block => this.onBlock(block))) {
-            this.posY += this.gravitationPower === 2 ? this.gravitationPower : this.gravitationPower += 2;
+        if (!massiveOfBlocks.some(block => this.onBlock(block)) || this.gravitationPower < 0) {
+            this.gravitationPower = this.gravitationPower >= this.dump ? this.dump : this.gravitationPower += 2;
+            for (let i = 0; i < Math.abs(this.gravitationPower); i++) {
+                if (this.gravitationPower < 0) {
+                    this.posY--;
+                    this.hitBoxPosY = this.posY + 21;
+                } else if (!massiveOfBlocks.some(block => this.onBlock(block))) {
+                    this.posY++;
+                    this.hitBoxPosY = this.posY + 21;
+                }
+            }
             return true;
+        } else {
+            this.gravitationPower = 0;
+            return false;
         }
     }
 
-    drawHitBox() {
+    drawHitBoxes() {
+        bullets.forEach(bullet => {
+            this.ctx.strokeRect(bullet.posX, bullet.posY, bullet.width, bullet.height);
+        });
+        massiveOfBlocks.forEach(block => {
+            // this.ctx.strokeRect(block.coordX, block.coordY, this.sizeBlock, this.sizeBlock);
+            if (((this.hitBoxPosY + this.hitBoxHeight === block.coordY) && ((this.hitBoxPosX >= block.coordX && this.hitBoxPosX <= block.coordX + this.sizeBlock) || (this.hitBoxPosX + this.hitBoxWidth >= block.coordX && this.hitBoxPosX + this.hitBoxWidth <= block.coordX + this.sizeBlock)))) {
+                this.ctx.strokeRect(block.coordX, block.coordY, this.sizeBlock, this.sizeBlock);
+            }
+        });
         this.ctx.strokeRect(this.hitBoxPosX, this.hitBoxPosY, this.hitBoxWidth, this.hitBoxHeight);
     }
+
 }
 
 //Class for creating bullet
