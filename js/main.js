@@ -15,7 +15,7 @@ import {
     background,
     backgroundClose,
     blocks,
-    objects
+    objects,
 } from './resources.js';
 import {
     pressedKeys,
@@ -87,6 +87,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     btnPlay.addEventListener('click', (e) => {
         e.preventDefault();
+        console.log(massiveOfBlocks);
         if (nickname.value && loading === 1) {
             blockStart.style.display = 'none';
             activateControls(mainHero);

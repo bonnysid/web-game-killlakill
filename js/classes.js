@@ -1,3 +1,7 @@
+import {
+    massiveOfBlocks
+} from './maps.js';
+
 let bullets = [];
 
 //Class for creating game animation
@@ -25,22 +29,26 @@ class AnimationGame {
 
 //Class for creating main character
 class Hero {
-    constructor(posX, posY, sprite, canvas, ctx, health = 100, mana = 100, speed = 8, widthSprite = 144, heihtSprite = 144, paddingY = 0, framesAnimStay = 3, framesAnimMove = 14, framesAnimShoot = 6, startFrameShoot = 3, framesAnimJump = 18) {
+    constructor(posX, posY, sprite, canvas, ctx, health = 100, mana = 100, speed = 8, widthSprite = 144, heightSprite = 144, paddingY = 0, framesAnimStay = 3, framesAnimMove = 14, framesAnimShoot = 6, startFrameShoot = 3, framesAnimJump = 18) {
 
         //Physical parametrs
         this.hp = health;
         this.mp = mana;
         this.speed = speed;
         this.sizeBlock = 96;
-        this.gravity = 1;
-        this.jumpPower = -20;
+        this.gravitationPower = 2;
+        this.jumpPower = -10;
+        this.hitBoxHeight = heightSprite - 21;
+        this.hitBoxWidth = widthSprite - 72;
 
         //Positions
         this.widthSprite = widthSprite;
-        this.heightSprite = heihtSprite;
+        this.heightSprite = heightSprite;
         this.paddingY = paddingY;
         this.posX = posX * this.sizeBlock;
         this.posY = posY * this.sizeBlock - this.widthSprite % this.sizeBlock;
+        this.hitBoxPosX = this.posX + 20;
+        this.hitBoxPosY = this.posY + 21;
         this.shootPosX = this.posX + 110;
         this.shootPosY = this.posY + 77;
 
@@ -74,6 +82,8 @@ class Hero {
     }
 
     update() {
+        // this.gravity();
+
         this.frame = this.frame >= 1000 ? 0 : this.frame += 1;
         if (this.isMoving) {
             this.posX += this.speed * this.direction;
@@ -91,12 +101,22 @@ class Hero {
             }
             this.shoot();
         }
-        if (this.isJumping) {
-            this.posY += this.jumpPower >= 20 ? -20 : this.jumpPower += this.gravity;
+        if (this.gravity()) {
+            this.isJumping = false;
             if (this.frame % 10 === 0) {
                 this.step = this.step >= this.widthSprite * this.endFrameJump ? this.widthSprite * (this.endFrameMove + 1) : this.step += this.widthSprite;
             }
         }
+        if (this.isJumping) {
+            // this.posY += this.jumpPower === 0 ? 0 : this.jumpPower += this.gravitationPower;
+            this.gravitationPower = -20;
+            this.posY += this.gravitationPower;
+        } else {
+            // this.jumpPower = -100;
+        }
+        this.hitBoxPosX = this.posX + (this.direction === 1 ? 20 : 48);
+        this.hitBoxPosY = this.posY + 21;
+        this.shootPosY = this.posY + 77;
         this.shootPosX = this.posX + (this.direction == 1 ? 110 : -32);
         this.stepForShoot = this.stepForShoot >= this.endFrameShoot * this.widthSprite ? this.startFrameShoot : this.stepForShoot += this.widthSprite;
     }
@@ -107,6 +127,21 @@ class Hero {
 
     shoot() {
         this.ctx.drawImage(this.sprite, this.stepForShoot, (this.direction == 1 ? 8 : 9) * this.heightSprite + 54, 76, 48, this.shootPosX, this.shootPosY, 76, 48);
+    }
+
+    onBlock(block) {
+        return ((this.hitBoxPosY + this.hitBoxHeight === block.coordY) && ((this.hitBoxPosX >= block.coordX && this.hitBoxPosX <= block.coordX + this.sizeBlock) || (this.hitBoxPosX + this.hitBoxWidth >= block.coordX && this.hitBoxPosX + this.hitBoxWidth <= block.coordX + this.sizeBlock)));
+    }
+
+    gravity() {
+        if (!massiveOfBlocks.some(block => this.onBlock(block))) {
+            this.posY += this.gravitationPower === 2 ? this.gravitationPower : this.gravitationPower += 2;
+            return true;
+        }
+    }
+
+    drawHitBox() {
+        this.ctx.strokeRect(this.hitBoxPosX, this.hitBoxPosY, this.hitBoxWidth, this.hitBoxHeight);
     }
 }
 
@@ -145,8 +180,8 @@ class Bullet {
 }
 
 class Enemy extends Hero {
-    constructor(type, posX, posY, sprite, canvas, ctx, health = 100, mana = 100, speed = 8, widthSprite = 144, heihtSprite = 144, paddingY = 0, framesAnimStay = 3, framesAnimMove = 14, framesAnimShoot = 6, startFrameShoot = 3, framesAnimJump = 18) {
-        super(posX, posY, sprite, canvas, ctx, health, mana, speed, widthSprite, heihtSprite, paddingY, framesAnimStay, framesAnimMove, framesAnimShoot, startFrameShoot, framesAnimJump);
+    constructor(type, posX, posY, sprite, canvas, ctx, health = 100, mana = 100, speed = 8, widthSprite = 144, heightSprite = 144, paddingY = 0, framesAnimStay = 3, framesAnimMove = 14, framesAnimShoot = 6, startFrameShoot = 3, framesAnimJump = 18) {
+        super(posX, posY, sprite, canvas, ctx, health, mana, speed, widthSprite, heightSprite, paddingY, framesAnimStay, framesAnimMove, framesAnimShoot, startFrameShoot, framesAnimJump);
         this.type = type;
         this.paddingY = type + 1;
     }
