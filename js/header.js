@@ -7,6 +7,7 @@ export default function headerShow() {
     <div class="container">
         <div class="header__block">
             <div class="header__btn--play">Play</div>
+            <a href="index.html" class="header__btn--exit">Exit</a>
             <input class="header__input" type="text" placeholder="Nickname">
         </div>
         <div class="header__logo"><a href="index.html"><img src="img/logo/logo.png" alt="logo"></a></div>
@@ -19,3 +20,4 @@ export default function headerShow() {
 
     document.querySelector('.wrapper').prepend(header);
 }
+headerShow();

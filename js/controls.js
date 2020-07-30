@@ -5,7 +5,14 @@ let pressedKeys = {
     'shoot': false
 };
 
-function activateControls(person) {
+const game = document.querySelector('.content.game');
+const pauseBlock = document.createElement('div');
+pauseBlock.classList.add('pause');
+pauseBlock.innerText = 'Paused';
+game.append(pauseBlock);
+pauseBlock.style.display = 'none';
+
+function activateControls(person, animation, startFunc) {
     function toggleKey(button, activation) {
         const code = button.keyCode;
         let action;
@@ -94,6 +101,16 @@ function activateControls(person) {
                         break;
                     case 'shoot':
                         person.isShooting = true;
+                        break;
+                    case 'pause':
+                        if (animation.isPause) {
+                            pauseBlock.style.display = 'none';
+                            animation.isPause = false;
+                            startFunc();
+                        } else {
+                            animation.isPause = true;
+                            pauseBlock.style.display = 'flex';
+                        }
                         break;
                 }
             }

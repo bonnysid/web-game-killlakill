@@ -1,8 +1,16 @@
 import headerShow from './header.js';
+import timer from './timer.js';
+import {
+    getResources,
+    postData
+} from './serverCommand.js';
 import {
     Hero,
-    Enemy,
+    Waves,
     AnimationGame,
+    renderBullets,
+    enemies,
+    ForeGround,
     bullets
 } from './classes.js';
 import {
@@ -15,7 +23,7 @@ import {
     background,
     backgroundClose,
     blocks,
-    objects,
+    objects
 } from './resources.js';
 import {
     pressedKeys,
@@ -24,27 +32,47 @@ import {
 
 window.addEventListener('DOMContentLoaded', () => {
     let loading = 0;
-    //Header render
-    headerShow();
-
     //Get all need objects
     const canvasBody = document.querySelector('.content');
-    const canvas = canvasBody.querySelector('#gameBG');
-    const canvasAnim = canvasBody.querySelector('#gameAnim');
+    const canvas = canvasBody.querySelector('#game__bg');
     const ctx = canvas.getContext('2d');
+    const canvasAnim = canvasBody.querySelector('#game__animation');
     const ctxAnim = canvasAnim.getContext('2d');
+    const blockDead = canvasBody.querySelector('.game__dead');
+    const blockStat = blockDead.querySelector('.game__stat');
+    const blockStart = canvasBody.querySelector('.game__play');
+    const blockWaves = canvasBody.querySelector('.game__wave');
+    const btnTryAgain = canvasBody.querySelector('#try__again');
+    const btnExit = canvasBody.querySelector('#exit');
+    const headerBtnExit = document.querySelector('.header__btn--exit');
     const btnPlay = document.querySelector('.header__btn--play');
-    const blockStart = document.querySelector('.game__play');
     const nickname = document.querySelector('.header__input');
     const requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
     const cancelAnimationFrame = window.cancelAnimationFrame || window.mozCancelAnimationFrame;
+    let foreGround;
+    let playerPlace = 1;
+    let startDate = new Date();
+    const updatedInf = document.createElement('div');
+    updatedInf.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    `;
+
+    getResources('http://localhost:3000/loginnedPlayer')
+        .then(data => {
+            if (Object.entries(data).length) {
+                nickname.value = data.nickname;
+            }
+        });
 
     //Setting canvas
     canvas.width = canvasBody.clientWidth;
     canvas.height = canvasBody.clientHeight - (canvasBody.clientHeight % 32);
     canvasAnim.width = canvasBody.clientWidth;
     canvasAnim.height = canvasBody.clientHeight - (canvasBody.clientHeight % 32);
+    blockDead.style.display = 'none';
+    blockWaves.style.left = `${canvas.width / 2 - window.getComputedStyle(blockWaves).width.slice(0, 3) / 2}px`;
 
     //Creates new Map
     const arena = new Map(
@@ -55,9 +83,13 @@ window.addEventListener('DOMContentLoaded', () => {
         canvas,
         ctx
     );
+    //Render New Map
+    arena.render();
+    const fg = new Image();
 
-    //Creates player
+    //Creates player and waves
     let mainHero;
+    let waves;
     sprites.onload = () => {
         mainHero = new Hero(
             4,
@@ -68,32 +100,123 @@ window.addEventListener('DOMContentLoaded', () => {
         );
         loading++;
         objects.push(mainHero);
-        // objects.push(bullets);
+        animation.person = mainHero;
+        waves = new Waves(mainHero, 15, 5, 4, ctxAnim, canvasAnim, sprites, {
+            type: 1,
+            startCoef: 3
+        }, {
+            type: 3,
+            startCoef: 0
+        }, {
+            type: 1,
+            startCoef: -3
+        });
+        objects.push(waves);
     };
-    const animation = new AnimationGame(objects, canvasAnim, ctxAnim);
+
+    const animation = new AnimationGame(objects, 0, canvasAnim, ctxAnim);
 
     function anim() {
         animation.draw();
-        animation.update();
-        bullets.forEach((bullet, i) => {
-            bullet.draw();
-            bullet.update();
-            if (bullet.isOut) {
-                bullets.splice(i, 1);
+        animation.update(foreGround);
+        renderBullets();
+        if (mainHero.isDead) {
+            postData('http://localhost:3000/leaderboard', JSON.stringify({
+                playerName: nickname.value,
+                time: mainHero.timeAlive,
+                score: mainHero.score
+            }));
+            blockDead.style.display = 'flex';
+            updatedInf.innerHTML = `
+                <div class="game__title">You are dead</div>
+                <div class="game__text">Place: ${playerPlace}</div>
+                <div class="game__text">Score: ${mainHero.score}</div>
+                <div class="game__text">Enemy kills: ${mainHero.kills}</div>
+                <div class="game__text">Minutes played: ${mainHero.timeAlive}</div>
+            `;
+            blockStat.insertAdjacentElement('afterbegin', updatedInf);
+        } else {
+            blockDead.style.display = 'none';
+        }
+        if (waves.spawnTime != 0 && !mainHero.isDead) {
+            if (waves.numWave != +blockWaves.innerText.slice(0, blockWaves.innerText.length - 5)) {
+                blockWaves.innerHTML = `${waves.numWave} Wave`;
+                blockWaves.style.display = 'block';
             }
-        });
-        requestAnimationFrame(anim);
+        } else {
+            blockWaves.style.display = 'none';
+        }
+        if (!animation.isPause && !mainHero.isDead) {
+            requestAnimationFrame(anim);
+        }
     }
 
-    btnPlay.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log(massiveOfBlocks);
+    function startGame() {
+        event.preventDefault();
+
         if (nickname.value && loading === 1) {
+            event.target.style.display = 'none';
+
+            postData('http://localhost:3000/loginnedPlayer', JSON.stringify({
+                nickname: nickname.value
+            }));
+            startDate = new Date();
             blockStart.style.display = 'none';
-            activateControls(mainHero);
-            anim();
+            headerBtnExit.style.display = 'flex';
+            activateControls(mainHero, animation, anim);
+            fg.onload = () => {
+                foreGround = new ForeGround(fg, canvasAnim, ctxAnim);
+                objects.unshift(foreGround);
+                anim();
+            };
+            fg.src = canvas.toDataURL();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            arena.drawBG();
+            timer(startDate, mainHero, animation);
         }
+    }
+
+    function endGame() {
+        event.target.style.display = 'none';
+        mainHero.hp = 100;
+        mainHero.score = 0;
+        mainHero.kills = 0;
+        mainHero.isDead = false;
+        foreGround.posX = 0;
+        waves.numWave = 1;
+        waves.coef = 0;
+        massiveOfBlocks.forEach(block => {
+            block.posX = block.startPosX;
+        });
+        mainHero.posX = arena.startPos;
+        bullets.splice(0, bullets.length);
+        enemies.splice(0, enemies.length);
+        postData('http://localhost:3000/loginnedPlayer', JSON.stringify(new Object));
+    }
+
+    btnPlay.addEventListener('click', startGame);
+    headerBtnExit.addEventListener('click', endGame);
+    btnExit.addEventListener('click', endGame);
+    // window.addEventListener('keyup', (e) => {
+    //     if (e.keyCode === 13) startGame();
+    // });
+
+    btnTryAgain.addEventListener('click', (e) => {
+        e.preventDefault();
+        mainHero.hp = 100;
+        mainHero.score = 0;
+        mainHero.kills = 0;
+        mainHero.isDead = false;
+        foreGround.posX = 0;
+        waves.numWave = 1;
+        waves.coef = 0;
+        massiveOfBlocks.forEach(block => {
+            block.posX = block.startPosX;
+        });
+        mainHero.posX = arena.startPos;
+        bullets.splice(0, bullets.length);
+        enemies.splice(0, enemies.length);
+        blockDead.style.display = 'none';
+        anim();
     });
-    //Render New Map
-    arena.render();
 });

@@ -155,6 +155,22 @@ h1, h2, h3, h4, h5, h6 {
 .header__btn--play:hover {
   background: #c94057;
 }
+.header__btn--exit {
+  font-size: 24px;
+  font-family: Pixel;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  margin: 20px;
+  color: #e2e2e2;
+  border: 4px solid #c94057;
+  transition: background 0.2s ease-in;
+  cursor: pointer;
+}
+.header__btn--exit:hover {
+  background: #c94057;
+}
 .header__btn a {
   padding: 15px;
   margin: 20px;
@@ -183,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
   -ms-interpolation-mode: nearest-neighbor;
   min-height: 672px;
 }
-.content #gameAnim {
+.content #game__animation {
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
@@ -213,6 +229,92 @@ h1, h2, h3, h4, h5, h6 {
 .content .game__play span {
   color: #c94057;
   margin: 0 17px;
+}
+.content .pause {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  opacity: 0.5;
+  color: #e2e2e2;
+  font-size: 36px;
+  font-family: Pixel;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.content .pause span {
+  color: #c94057;
+  margin: 0 17px;
+}
+
+.game__dead {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #e2e2e2;
+  background-color: #0e0e0e;
+  font-family: Pixel;
+  font-size: 24px;
+}
+.game__stat {
+  display: flex;
+  flex-direction: column;
+  width: 432px;
+  height: 635px;
+  padding: 347px 62px 49px 62px;
+  background: url(../img/dead/death.gif);
+}
+.game__title {
+  font-size: 42px;
+  color: #c94057;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.game__text {
+  margin: 10px 0;
+}
+.game__block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
+  width: 100%;
+}
+.game__btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 10px;
+  padding: 10px 15px;
+  color: #e2e2e2;
+  border: 4px solid #c94057;
+  transition: background 0.2s ease-in;
+  cursor: pointer;
+}
+.game__btn:hover {
+  background: #c94057;
+}
+.game__wave {
+  display: none;
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 300px;
+  text-align: center;
+  color: #e2e2e2;
+  background: #3a3a3a;
+  font-family: Pixel;
+  font-size: 50px;
+  border: 4px solid #c94057;
+  padding-bottom: 6px;
 }
 
 .controls {
