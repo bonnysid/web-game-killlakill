@@ -121,6 +121,10 @@
         align-items: center;
         align-self: flex-end;
         width: 100%;
+
+        &.btns {
+            margin-top: 28px;
+        }
     }
 
     &__btn {

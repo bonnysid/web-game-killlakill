@@ -1,4 +1,6 @@
-import headerShow from './header.js';
+import {
+    headerShow
+} from './header.js';
 import timer from './timer.js';
 import {
     getResources,
@@ -31,6 +33,7 @@ import {
 } from './controls.js';
 
 window.addEventListener('DOMContentLoaded', () => {
+    // headerShow();
     let loading = 0;
     //Get all need objects
     const canvasBody = document.querySelector('.content');
@@ -62,7 +65,13 @@ window.addEventListener('DOMContentLoaded', () => {
     getResources('http://localhost:3000/loginnedPlayer')
         .then(data => {
             if (Object.entries(data).length) {
-                nickname.value = data.nickname;
+                if (nickname.value.slice(0, 6) != 'Hello,') {
+                    nickname.value = `Hello, ${data.nickname}`;
+                } else {
+                    nickname.value = data.nickname;
+                }
+                headerBtnExit.style.display = 'flex';
+                disableInput();
             }
         });
 
@@ -129,11 +138,11 @@ window.addEventListener('DOMContentLoaded', () => {
             blockDead.style.display = 'flex';
             updatedInf.innerHTML = `
                 <div class="game__title">You are dead</div>
-                <div class="game__text">Place: ${playerPlace}</div>
                 <div class="game__text">Score: ${mainHero.score}</div>
                 <div class="game__text">Enemy kills: ${mainHero.kills}</div>
-                <div class="game__text">Minutes played: ${mainHero.timeAlive}</div>
+                <div class="game__text">Seconds played: ${mainHero.timeAlive}</div>
             `;
+            // <div class="game__text">Place: ${playerPlace}</div> Need to add
             blockStat.insertAdjacentElement('afterbegin', updatedInf);
         } else {
             blockDead.style.display = 'none';
@@ -155,8 +164,8 @@ window.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         if (nickname.value && loading === 1) {
+            disableInput();
             event.target.style.display = 'none';
-
             postData('http://localhost:3000/loginnedPlayer', JSON.stringify({
                 nickname: nickname.value
             }));
@@ -177,7 +186,23 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     function endGame() {
+        postData('http://localhost:3000/loginnedPlayer', JSON.stringify(new Object));
+        enableInput();
         event.target.style.display = 'none';
+        reloadStats();
+    }
+
+    function disableInput() {
+        nickname.classList.add('header__input--disabled');
+        nickname.disabled = true;
+    }
+
+    function enableInput() {
+        nickname.classList.remove('header__input--disabled');
+        nickname.disabled = false;
+    }
+
+    function reloadStats() {
         mainHero.hp = 100;
         mainHero.score = 0;
         mainHero.kills = 0;
@@ -191,7 +216,6 @@ window.addEventListener('DOMContentLoaded', () => {
         mainHero.posX = arena.startPos;
         bullets.splice(0, bullets.length);
         enemies.splice(0, enemies.length);
-        postData('http://localhost:3000/loginnedPlayer', JSON.stringify(new Object));
     }
 
     btnPlay.addEventListener('click', startGame);
@@ -203,19 +227,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     btnTryAgain.addEventListener('click', (e) => {
         e.preventDefault();
-        mainHero.hp = 100;
-        mainHero.score = 0;
-        mainHero.kills = 0;
-        mainHero.isDead = false;
-        foreGround.posX = 0;
-        waves.numWave = 1;
-        waves.coef = 0;
-        massiveOfBlocks.forEach(block => {
-            block.posX = block.startPosX;
-        });
-        mainHero.posX = arena.startPos;
-        bullets.splice(0, bullets.length);
-        enemies.splice(0, enemies.length);
+        reloadStats();
         blockDead.style.display = 'none';
         anim();
     });

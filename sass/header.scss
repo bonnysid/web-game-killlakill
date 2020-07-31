@@ -28,7 +28,14 @@
         width: 270px;
         background: $white;
         color: $dark;
+
+        &--disabled {
+            background: transparent;
+            border: none;
+            color: $white;
+        }
     }
+
 
     &__logo {
         position: relative;
@@ -80,7 +87,7 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
-            margin: 20px;
+            margin: 20px 20px 20px 0;
             color: $white;
             border: 4px solid $blood;
             transition: background 0.2s ease-in;
@@ -88,10 +95,6 @@
 
             &:hover {
                 background: $blood;
-            }
-
-            a {
-                color: ;
             }
         }
 
