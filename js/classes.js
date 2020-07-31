@@ -60,7 +60,7 @@ class Hero {
         this.speed = speed;
         this.sizeBlock = 96;
         this.gravitationPower = 0;
-        this.jumpPower = -10;
+        this.jumpPower = -28;
         this.hitBoxHeight = heightSprite - 21;
         this.hitBoxWidth = widthSprite - 72;
         this.dump = 0;
@@ -162,7 +162,7 @@ class Hero {
             }
         }
         if (this.isJumping) {
-            this.gravitationPower = -28;
+            this.gravitationPower = this.jumpPower;
             this.dump = Math.abs(this.gravitationPower);
             this.posY += this.gravitationPower;
         }
@@ -209,7 +209,7 @@ class Hero {
         bullets.forEach((bullet, i) => {
             // console.log(bullet.bulletOfEnemy);
             // console.log((bullet.posX + bullet.width === this.hitBoxPosX));
-            console.log(bullet.posX);
+            // console.log(bullet.posX);
             if (bullet.bulletOfEnemy && ((bullet.posX + bullet.width === this.hitBoxPosX || bullet.posX === this.hitBoxPosX + this.hitBoxWidth) && (bullet.posY >= this.hitBoxPosY && bullet.posY + bullet.height <= this.hitBoxPosY + this.hitBoxHeight))) {
                 if (this.hp <= 0) {
                     this.isDead = true;

@@ -30,7 +30,7 @@ export class Map {
         }, 50);
     }
 
-    render() {
+    drawFG() {
         this.bgClose.onload = setTimeout(() => {
             this.ctx.drawImage(this.bgClose, 0, 0, 1400, 788, 0, 0, this.canvas.width, this.canvas.height);
         }, 50);

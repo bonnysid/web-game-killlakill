@@ -95,8 +95,8 @@ window.addEventListener('DOMContentLoaded', () => {
         canvas,
         ctx
     );
-    //Render New Map
-    arena.render();
+    //drawFG New Map
+    arena.drawFG();
     const fg = new Image();
 
     //Creates player and waves
