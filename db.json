@@ -2,69 +2,27 @@
   "leaderboard": [
     {
       "playerName": "bonnysid",
-      "time": 130,
-      "score": 2240,
+      "time": "01:91",
+      "score": 1300,
       "id": 1
     },
     {
       "playerName": "bonnysid",
-      "time": 12,
-      "score": 20,
+      "time": "02:09",
+      "score": 2020,
       "id": 2
     },
     {
-      "playerName": "whoiam",
-      "time": 53,
-      "score": 460,
+      "playerName": "bonnysid",
+      "time": "00:18",
+      "score": 820,
       "id": 3
     },
     {
-      "playerName": "whoiam",
-      "time": 12,
-      "score": 0,
-      "id": 4
-    },
-    {
       "playerName": "bonnysid",
-      "time": 156,
-      "score": 2220,
-      "id": 5
-    },
-    {
-      "playerName": "bonnysid",
-      "time": 92,
+      "time": "00:33",
       "score": 1300,
-      "id": 6
-    },
-    {
-      "playerName": "bonnysid",
-      "time": 191,
-      "score": 3200,
-      "id": 7
-    },
-    {
-      "playerName": "bonnysid",
-      "time": 14,
-      "score": 180,
-      "id": 8
-    },
-    {
-      "playerName": "bonnysid",
-      "time": 13,
-      "score": 40,
-      "id": 9
-    },
-    {
-      "playerName": "bonnysid",
-      "time": 6,
-      "score": 20,
-      "id": 10
-    },
-    {
-      "playerName": "bonnysid",
-      "time": "00:13",
-      "score": 0,
-      "id": 11
+      "id": 4
     }
   ],
   "loginnedPlayer": {

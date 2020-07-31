@@ -233,7 +233,7 @@ class Hero {
     }
 
     checkPosition(fg) {
-        return (this.posX - 1 - this.canvas.width / 2 === 0 || this.posX - this.canvas.width / 2 === 0) && ((fg.posX + fg.img.width - 10 >= this.canvas.width && this.direction === 1) || (fg.posX < 0 && this.direction === -1)) && this.isMoving;
+        return (this.posX - 1 - this.canvas.width / 2 === 0 || this.posX - this.canvas.width / 2 === 0 || this.posX + 1 - this.canvas.width / 2 === 0) && ((fg.posX + fg.img.width - 10 >= this.canvas.width && this.direction === 1) || (fg.posX < 0 && this.direction === -1)) && this.isMoving;
     }
 
 }
@@ -494,8 +494,6 @@ class HealthBar {
         this.ctx.fillRect(this.posX + 152, this.posY + 66, this.hp, this.barHeightHP);
         this.ctx.fillStyle = this.manaColor;
         this.ctx.fillRect(this.posX + 152, this.posY + 102, this.mana, this.barHeightMP);
-
-
         this.ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.posX, this.posY, this.img.width, this.img.height);
     }
 }
