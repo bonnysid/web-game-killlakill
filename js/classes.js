@@ -116,9 +116,9 @@ class Hero {
         // this.checkGettingDamage();
         if (this.hitBoxPosX <= 0) this.posX = 0;
         if (this.posX + this.hitBoxWidth >= fg.img.width || this.posX + Math.abs(fg.posX) + 120 >= fg.img.width) this.posX = this.posX - this.speed;
-        if (this.hp <= 0) {
-            this.isDead = true;
-        }
+        if (this.hp <= 0) this.isDead = true;
+        if (this.hp < 100 && this.frame % 10 === 0) this.hp++;
+
         this.frame = this.frame >= 1000 ? 0 : this.frame += 1;
         if (this.isMoving) {
             if (this.checkPosition(fg)) {
@@ -467,13 +467,47 @@ class ForeGround {
     }
 }
 
+class HealthBar {
+    constructor(person, img, ctx, canvas, barHeightHP = 20, barHeightMP = 32, posX = 20, posY = 20, scale = 3, hp = 100, mana = 100) {
+        this.person = person;
+        this.hp = hp * scale;
+        this.mana = mana * scale;
+        this.scale = scale;
+        this.img = img;
+        this.ctx = ctx;
+        this.posX = posX;
+        this.posY = posY;
+        this.canvas = canvas;
+        this.hpColor = '#9e2835';
+        this.manaColor = '#28459e';
+        this.barHeightHP = barHeightHP;
+        this.barHeightMP = barHeightMP;
+    }
+
+    update() {
+        this.hp = (Math.floor(this.person.hp / 1.85)) * this.scale;
+        this.mana = (Math.floor(this.person.mp / 1.85)) * this.scale;
+    }
+
+    draw() {
+        this.ctx.fillStyle = this.hpColor;
+        this.ctx.fillRect(this.posX + 152, this.posY + 66, this.hp, this.barHeightHP);
+        this.ctx.fillStyle = this.manaColor;
+        this.ctx.fillRect(this.posX + 152, this.posY + 102, this.mana, this.barHeightMP);
+
+
+        this.ctx.drawImage(this.img, 0, 0, this.img.width, this.img.height, this.posX, this.posY, this.img.width, this.img.height);
+    }
+}
+
 export {
     Hero,
     Enemy,
     AnimationGame,
     Waves,
-    enemies,
-    renderBullets,
     ForeGround,
-    bullets
+    HealthBar,
+    bullets,
+    renderBullets,
+    enemies
 };

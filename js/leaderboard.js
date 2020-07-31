@@ -44,6 +44,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="content__td">${score}</div>
                 `;
             });
-            postData('http://localhost:3000/leaderboard', data);
+            // postData('http://localhost:3000/leaderboard', data);
         });
 });

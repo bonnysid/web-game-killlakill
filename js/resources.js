@@ -657,6 +657,9 @@ backgroundClose.src = 'img/bg/bgClose.png';
 const blocks = new Image();
 blocks.src = 'img/blocks/AllBlocks.png';
 
+const avatar = new Image();
+avatar.src = 'img/people/avatar.png';
+
 const objects = [];
 
 export {
@@ -666,5 +669,6 @@ export {
     backgroundClose,
     blocks,
     objects,
-    createListOfTypes
+    createListOfTypes,
+    avatar
 };

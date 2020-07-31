@@ -13,7 +13,8 @@ import {
     renderBullets,
     enemies,
     ForeGround,
-    bullets
+    bullets,
+    HealthBar
 } from './classes.js';
 import {
     massiveOfBlocks,
@@ -25,7 +26,8 @@ import {
     background,
     backgroundClose,
     blocks,
-    objects
+    objects,
+    avatar
 } from './resources.js';
 import {
     pressedKeys,
@@ -41,6 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const canvasAnim = canvasBody.querySelector('#game__animation');
     const ctxAnim = canvasAnim.getContext('2d');
+    const timerBody = canvasBody.querySelector('.timer');
     const blockDead = canvasBody.querySelector('.game__dead');
     const blockStat = blockDead.querySelector('.game__stat');
     const blockStart = canvasBody.querySelector('.game__play');
@@ -99,6 +102,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //Creates player and waves
     let mainHero;
     let waves;
+    let healthBar;
     sprites.onload = () => {
         mainHero = new Hero(
             4,
@@ -110,6 +114,7 @@ window.addEventListener('DOMContentLoaded', () => {
         loading++;
         objects.push(mainHero);
         animation.person = mainHero;
+
         waves = new Waves(mainHero, 15, 5, 4, ctxAnim, canvasAnim, sprites, {
             type: 1,
             startCoef: 3
@@ -117,10 +122,13 @@ window.addEventListener('DOMContentLoaded', () => {
             type: 3,
             startCoef: 0
         }, {
-            type: 1,
+            type: 5,
             startCoef: -3
         });
         objects.push(waves);
+
+        healthBar = new HealthBar(mainHero, avatar, ctxAnim, canvasAnim);
+        objects.push(healthBar);
     };
 
     const animation = new AnimationGame(objects, 0, canvasAnim, ctxAnim);
@@ -140,7 +148,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="game__title">You are dead</div>
                 <div class="game__text">Score: ${mainHero.score}</div>
                 <div class="game__text">Enemy kills: ${mainHero.kills}</div>
-                <div class="game__text">Seconds played: ${mainHero.timeAlive}</div>
+                <div class="game__text">Game time: ${mainHero.timeAlive}</div>
             `;
             // <div class="game__text">Place: ${playerPlace}</div> Need to add
             blockStat.insertAdjacentElement('afterbegin', updatedInf);
@@ -181,13 +189,15 @@ window.addEventListener('DOMContentLoaded', () => {
             fg.src = canvas.toDataURL();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             arena.drawBG();
-            timer(startDate, mainHero, animation);
+            timerBody.style.display = 'flex';
+            timer(startDate, mainHero, animation, timerBody);
         }
     }
 
     function endGame() {
         postData('http://localhost:3000/loginnedPlayer', JSON.stringify(new Object));
         enableInput();
+        timerBody.style.display = 'none';
         event.target.style.display = 'none';
         reloadStats();
     }
