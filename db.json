@@ -2,30 +2,11 @@
   "leaderboard": [
     {
       "playerName": "bonnysid",
-      "time": "01:91",
-      "score": 1300,
-      "id": 1
-    },
-    {
-      "playerName": "bonnysid",
       "time": "02:09",
       "score": 2020,
       "id": 2
-    },
-    {
-      "playerName": "bonnysid",
-      "time": "00:18",
-      "score": 820,
-      "id": 3
-    },
-    {
-      "playerName": "bonnysid",
-      "time": "00:33",
-      "score": 1300,
-      "id": 4
     }
   ],
   "loginnedPlayer": {
-    "nickname": "bonnysid"
   }
 }

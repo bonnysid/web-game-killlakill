@@ -44,6 +44,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const canvasAnim = canvasBody.querySelector('#game__animation');
     const ctxAnim = canvasAnim.getContext('2d');
     const timerBody = canvasBody.querySelector('.timer');
+    const minutesBlock = timerBody.querySelector('.timer__minutes');
+    const secondsBlock = timerBody.querySelector('.timer__seconds');
     const blockDead = canvasBody.querySelector('.game__dead');
     const blockStat = blockDead.querySelector('.game__stat');
     const blockStart = canvasBody.querySelector('.game__play');
@@ -238,6 +240,11 @@ window.addEventListener('DOMContentLoaded', () => {
     btnTryAgain.addEventListener('click', (e) => {
         e.preventDefault();
         reloadStats();
+        startDate = new Date();
+        minutesBlock.innerHTML = '00';
+        secondsBlock.innerHTML = '00';
+        timerBody.style.display = 'flex';
+        timer(startDate, mainHero, animation, timerBody);
         blockDead.style.display = 'none';
         anim();
     });
